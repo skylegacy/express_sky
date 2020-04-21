@@ -3,9 +3,41 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <h3>由前端來加載CSS</h3>
+    <span id="msg">
+        <% if (typeof signalMsger != 'undefined') { %>
+          <%= signalMsger %>
+        <% } %>
+    </span>
+    <p>Welcome to <%= title %></p> 
+
+    <div id="app">    
+        <h3>Vue: {{ message }}</h3>
+    </div>
+    <script  src="/javascripts/require.js"></script>
+    <script  src="/javascripts/app.js"></script>
+    
+    <script>
+       
+
+       (function(){
+          require(['index'],function(scripIndex){
+            scripIndex.init();
+          })
+       })();
+
+    </script>
+    <script type="text/javascript">
+      var app = new Vue({
+          el: '#app',
+          data: {
+            message: 'Hello, world!'
+          }
+      });
+      </script>
   </body>
 </html>

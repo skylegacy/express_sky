@@ -15,7 +15,7 @@ router.post('/create',function(req, res, next){
 
 /* GET */
 router.get('/login',function(req, res, next){
-    console.dir(req.originalUrl);
+    
     res.send('一般的會員登錄');
 })
 

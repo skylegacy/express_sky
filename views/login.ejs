@@ -5,15 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>skyline</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.3.3/tocas.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script  src="/javascripts/require.js"></script>
+    <script  src="/javascripts/app.js"></script> 
+    <script>
+        (function(){
+          require(['login'],function(scripIndex){
+            scripIndex.init();
+          })
+       })();
+    </script>
 </head>
 <body>
-
-    <h1><%= title  %> </h1>
-    
+        <span id="msg">
+                <% if (typeof signalMsger != 'undefined') { %>
+                    <%= signalMsger %>
+                  <% } %>
+        </span>
+ 
+    <!-- <h3>由前端來加載CSS</h3>
     <form action="/admin/login" method="post">
       <input type="text" name="username" placeholder="名稱">
       <input type="password" name="password" placeholder="密碼"> 
       <input type="submit" value="登入">
-    </form>
+    </form> -->
+
+    <br>
+    <br> 
+    <div class="ts very narrow container">
+
+            <div class="ts grid  centered ">
+            
+                <div class=" eight wide column">
+                    <!-- 抬頭標題 -->
+                    <h2 class="ts center aligned header">
+                            <%= title  %> 
+                            <h4 id ='vtitle' class="sub header">{{ subtitle }}</h4>
+                    </h2>
+                    <!-- / 抬頭標題 -->
+
+                    <!-- 主要登入片段 -->
+                    <div class="ts centered secondary segment ">
+                        <!-- 表單 -->
+                        <form id="loginForm" class="ts form" action="/admin/login" method="post">
+                            <!-- 帳號欄位 -->
+                            <div class="field">
+                                <label>帳號</label>
+                                <input type="text" v-model.trim="user.username" name="username" placeholder="名稱">
+                            </div>
+                            <!-- / 帳號欄位 -->
+            
+                            <!-- 密碼欄位 -->
+                            <div class="field">
+                                <label>密碼</label>
+                                <input type="password" v-model.trim="user.password" name="password" placeholder="密碼">
+                            </div>
+                            <!-- / 密碼欄位 -->
+            
+                            <!-- 登入按鈕 -->
+                            <button type="button" v-on:click="loginFunc" class="ts positive fluid button">登入</button>
+                            <!-- / 登入按鈕 -->
+                            <div v-text="loginResult"></div>
+                        </form>
+                        <!-- / 表單 -->
+                    </div>
+                    <!-- / 主要登入片段 -->
+                </div>
+
+            </div>
+
+    </div>
+ 
+
+
+   
+    <script>
+
+       var vTitle = new Vue({
+            el:'#vtitle',
+            data:{
+                    subtitle:"vue表單登入skyOpps(ajax)"
+                }
+       });
+       var vform = new Vue({
+            el:'#loginForm',
+            data:{
+                user: {
+                    username:null,
+                    password:null
+                },
+                loginResult:""
+            },
+            methods:{
+                loginFunc: function () {
+                    let vm = this;
+                    $.ajax({ 
+                        url: "/admin/login",
+                        method: "post",
+                        data: vm.user, 
+                        success: function (text) {
+                            vm.loginResult=text;
+                        }
+                    });
+                }
+            }
+
+       });
+
+
+
+    </script>
 </body>
 </html>

@@ -1,68 +1,81 @@
 
-function Auth(){
-     
-}
+function Auth(){ };
 
+Auth.prototype.inspectRoute = function(req){ 
+    console.log('--- 控制器+方法 ---');
+    var control_path = req.baseUrl.replace("/","");
+    var method_path = req.path.split("/");
+    var currentRouter = {
+        contrl:method_path[1],
+        method:method_path[2]
+    } 
+    console.log(currentRouter);
+    return '/'+currentRouter.contrl+'/'+currentRouter.method;
+};
 
-Auth.prototype.getSess = function(key){
-    console.log('取得seesion變數');
-    return req.session[key];
-}
-
-Auth.prototype.setSess = function(obj){
-    console.log('設至seesion變數');
-    for(var key in obj){
-        req.session[key] = obj[key];
-    }
-}
-
-Auth.prototype.bindUser = function(obj){
-    console.log('設至seesion.loginUser變數');
-    return function(req){
-        for(var key in obj){
-            req.session.loginUser[key] = obj[key];
-        }
-    }
-
+Auth.prototype.bindUser = async function(req,dataUser){ 
+        req.session.loginUser = dataUser.user_name;
+        req.session.loginAccount = dataUser.user_account;
 };
 
 Auth.prototype.getUserRoute = function(req,res,next){
 
+    var authInstance = req.app.get('auth');
+
     var notLoginRouteAvoid = [
-        '/admin/console/'
+        '/admin/console',
+        '/admin/logout'
      ];
 
      var isLoginRouteAvoid = [
-         '/admin/login/'
-     ]
-
-     var currentPath = req.path;
+         '/admin/login'
+     ];
+ 
      var flag = null;
 
-     console.log('控制器:'+req.baseUrl+',方法:'+req.path);
-     console.log(req.session.loginUser);
-    // todo:驗證身份並前往資料庫取得該會員可造訪的路由清單
+     var currentPath = authInstance.inspectRoute(req);
+
+    console.log('存在session,身份為:'+req.session.loginUser);
+
+    console.log('輸入的路由為:'+currentPath);
+
      if(req.session.loginUser == undefined){
-
-        console.log('存在session,不存在身份');
-
+        console.log('---檢查路由中---');
         notLoginRouteAvoid.forEach(function(item, index, array){
-            flag = item == currentPath? true:false;
+        
+            if (item == currentPath){
+                flag = true;
+                return false;
+            }
         })
 
+        if(flag==true){
+            req.flash('signalMsger','未登入時不可去console頁');
+            
+         }
+        //  console.log('未登入時不可去console頁');
          flag==true? res.redirect('back'):next();
     
      }else{
-
-        console.log('存在session,身份為:'+req.session.loginUser);
-
+        console.log('---檢查路由中---');
         isLoginRouteAvoid.forEach(function(item, index, array){
-            flag = item == currentPath? true:false;
-        })
+            // console.log(item);
+            if (item == currentPath){
+                flag = true;
+                return false;
+            }
+        });
 
+        if(flag==true){
+            req.flash('signalMsger','已登入時不可去登入頁');
+            
+         }
+        //  console.log('已登入時不可去登入頁');
         flag==true? res.redirect('back'):next();
+        
      } 
 }
+
 
 Auth.prototype.destroySess = function(req){
     req.session.destroy(function(){
