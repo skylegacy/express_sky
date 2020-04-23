@@ -3,20 +3,22 @@ var router = express.Router();
 
   /* GET */
   router.get('/console',function(req, res, next){
-    res.render('admin');
+      
+       res.render('admin');
   })
   
   /* GET */
   router.get('/logout',function(req, res, next){
-      var auth = req.app.get('auth');
-      auth.destroySess(req);
-      res.json( {msg:' session destroy success!'} );
+    var auth = req.app.get('auth');
+       auth.destroySess(req);
+       res.json( {msg:' session destroy success!'} );
   });
   
   /* GET */
   router.get('/login',function(req,res,next){
-    res.locals.signalMsger = req.flash('signalMsger').toString();
-    res.render('login', { title: '管理後台登入' });
+       
+       res.locals.signalMsger = req.flash('signalMsger').toString();
+       res.render('login', { title: '管理後台登入' });
   })
   
   /* POST */
@@ -40,11 +42,12 @@ var router = express.Router();
       console.log('綁定session出錯..');
     }
      
-    
     res.json( { msg:permitLogin} );
    
   })
 
 
+  /* POST */
+  //route.post('/logout',function(){})
 
   module.exports = router;
