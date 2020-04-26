@@ -106,6 +106,7 @@
                         data: vm.user, 
                         success: function (text) {
                             vm.loginResult=text;
+                            location.href = "/admin/console";
                         }
                     });
                 }

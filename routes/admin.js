@@ -9,9 +9,11 @@ var router = express.Router();
   
   /* GET */
   router.get('/logout',function(req, res, next){
-    var auth = req.app.get('auth');
+        req.flash('signalMsger','已成功登出')
+        res.locals.signalMsger = req.flash('signalMsger').toString();
+       var auth = req.app.get('auth');
        auth.destroySess(req);
-       res.json( {msg:' session destroy success!'} );
+       res.redirect('/');
   });
   
   /* GET */
@@ -48,6 +50,10 @@ var router = express.Router();
 
 
   /* POST */
-  //route.post('/logout',function(){})
+  router.post('/logout',function(){
+    var auth = req.app.get('auth');
+    auth.destroySess(req);
+    res.json( {msg:' session destroy success!'} );
+  })
 
   module.exports = router;
