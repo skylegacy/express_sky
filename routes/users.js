@@ -19,5 +19,10 @@ router.get('/login',function(req, res, next){
     res.send('一般的會員登錄');
 })
 
+/* GET */
+router.get('/logout',function(req, res, next){
+    res.send('一般的會員登出');
+})
+
 
 module.exports = router;
