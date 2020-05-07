@@ -1,6 +1,5 @@
 
- 
-var bcrypt = require('bcrypt');
+  
 const saltRounds = 10;
 var models = require('../models');
 var bcrypt = require('bcrypt');
@@ -69,7 +68,8 @@ User.prototype.authUser = async function(username,password){
                         },
                         credentail: { 
                             user_name:autheticatedUser.username,
-                            user_account:autheticatedUser.account
+                            user_account:autheticatedUser.account,
+                            user_id:autheticatedUser.id
                         }
                     };
                 }

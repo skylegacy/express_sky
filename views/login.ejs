@@ -8,20 +8,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.3.3/tocas.css">
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script  src="/javascripts/require.js"></script>
-    <script  src="/javascripts/app.js"></script> 
-    <script>
-        (function(){
-          require(['login'],function(scripIndex){
-            scripIndex.init();
-          })
-       })();
-    </script>
+    <script  src="/javascripts/app.js"></script>
+  
+   
+    
 </head>
 <body>
         <span id="msg">
                 <% if (typeof signalMsger != 'undefined') { %>
                     <%= signalMsger %>
-                  <% } %>
+                <% } %>
         </span>
  
     <!-- <h3>由前端來加載CSS</h3>
@@ -85,37 +81,14 @@
        var vTitle = new Vue({
             el:'#vtitle',
             data:{
-                    subtitle:"vue表單登入skyOpps(ajax)"
+                    subtitle:"webpack載入css不但不延遲還會自動編譯,還可以根據不同頁面按需加載!"
                 }
        });
-       var vform = new Vue({
-            el:'#loginForm',
-            data:{
-                user: {
-                    username:null,
-                    password:null
-                },
-                loginResult:""
-            },
-            methods:{
-                loginFunc: function () {
-                    let vm = this;
-                    $.ajax({ 
-                        url: "/admin/login",
-                        method: "post",
-                        data: vm.user, 
-                        success: function (text) {
-                            vm.loginResult=text;
-                            location.href = "/admin/console";
-                        }
-                    });
-                }
-            }
-
-       });
-
-
-
+    </script>
+    <script src="/javascripts/output/bundle.js"></script>
+    <script>
+        adminLoginer.LoadComponent();
+        adminLoginer.LoadCompCss();
     </script>
 </body>
 </html>

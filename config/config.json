@@ -1,15 +1,20 @@
 {
   "development": {
-    "username": "root",
+    "username": "sky",
     "password": "123456789",
-    "database": "skyship",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "database": "skyline",
+    "host": "52.78.63.133",
+    "dialect": "mysql",
+    "pool": {
+      "max": 10,
+      "min": 0,
+      "idle": 10000
+    }
   },
   "test": {
     "username": "root",
-    "password": null,
-    "database": "database_test",
+    "password": "123456789",
+    "database": "skyship",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },

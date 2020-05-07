@@ -18,9 +18,12 @@ var router = express.Router();
   
   /* GET */
   router.get('/login',function(req,res,next){
-       
+       res.locals.loadCss = '/stylesheets/login.css';
        res.locals.signalMsger = req.flash('signalMsger').toString();
-       res.render('login', { title: '管理後台登入' });
+       res.render('login',  { 
+         title: '管理後台登入',
+          csstags: ["/stylesheets/login.css"]
+        });
   })
   
   /* POST */
@@ -36,7 +39,8 @@ var router = express.Router();
   
       var dataUser = {
         user_name:permitLogin.credentail.user_name,
-        user_account:permitLogin.credentail.user_account
+        user_account:permitLogin.credentail.user_account,
+        user_id:permitLogin.credentail.user_id
       }
         auth.bindUser( req, dataUser);
   

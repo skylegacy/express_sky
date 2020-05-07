@@ -5,8 +5,7 @@ requirejs.config({
         'jquery':'./javascripts/jquery',
         'helper':'./javascripts/helper',
         'css':'./javascripts/libs/require-css/css',
-        'index':'./javascripts/index',
-        'login':'./javascripts/login',
+        'index':'./javascripts/index', 
     },
     shim:{
         'index':{
@@ -14,11 +13,6 @@ requirejs.config({
             exports:'index'            
         }
         
-        ,
-        'login':{
-            deps:['css!./stylesheets/login.css'],
-            exports:'login' 
-        }
     }
     // map:{
     //     '*': {
@@ -30,7 +24,7 @@ requirejs.config({
 
 require([
     'helper',
-    'jquery',
+    'jquery'
 ],function(helper,$){
 
     // console.log($);

@@ -1,4 +1,7 @@
 
+var models = require('../models');
+
+
 function Auth(){
 };
 
@@ -14,7 +17,7 @@ Auth.prototype.inspectRoute = function(req){
     if(currentRouter.contrl!=undefined && currentRouter.method!=undefined){
        control_path = '/'+currentRouter.contrl+'/'+currentRouter.method;
     }else{
-        control_path = '/';
+       control_path = '/';
     }
     return control_path;
 };
@@ -34,8 +37,16 @@ Auth.prototype.switchReferr = function(req){
 }
 
 // 取得路由列表
-Auth.prototype.retrivRoleRoute = function(req){
+Auth.prototype.retrivRoleRoute = async function(userId){
     
+    var result =  await models.sequelize.query(
+    'select  contrlname,method from '+
+    'Users as A join RouRoUsers as B join routers as C '+
+    'on A.id = B.UserId and B.RouRolId = C.id and A.id = :user_id ',
+      { replacements: { user_id: userId  }, type: models.Sequelize.QueryTypes.SELECT }
+    );
+
+    return result;
 }
 
 Auth.prototype.directReferr = function(req,res){
@@ -47,9 +58,45 @@ Auth.prototype.directReferr = function(req,res){
 Auth.prototype.bindUser = async function(req,dataUser){ 
         req.session.loginUser = dataUser.user_name;
         req.session.loginAccount = dataUser.user_account;
+        req.session.loginUserID = dataUser.user_id;
 };
 
-Auth.prototype.getUserRoute = function(req,res,next){
+Auth.prototype.mappUserRoute = async function(req){
+
+    var authInstance = req.app.get('auth');
+
+    var currentPath = authInstance.inspectRoute(req);
+    
+    console.log('輸入的路由為:'+currentPath);
+    console.log('存在session,身份為:'+req.session.loginUser);
+    console.log('存在session,ID為:'+req.session.loginUserID);
+
+      var isLoginRouteMap =[];
+      var permitt = false;
+
+        var permitPaths = await authInstance.retrivRoleRoute(req.session.loginUserID);
+
+        for (const [index, valObj] of permitPaths.entries()) {
+            var item = '/'+valObj.contrlname+'/'+valObj.method;
+           isLoginRouteMap.push(item);
+         }
+
+        //  console.log('=======授權路由========');
+        //  console.log(isLoginRouteMap);
+
+         isLoginRouteMap.forEach(function(item, index, array){
+            if (item == currentPath){
+                permitt = true;
+                console.log('找到授權路徑');
+                return false;
+            }
+         });
+
+         return permitt;
+
+}
+
+Auth.prototype.getUserRoute = async function(req,res,next){
 
     var authInstance = req.app.get('auth');
 
@@ -61,23 +108,22 @@ Auth.prototype.getUserRoute = function(req,res,next){
      var isLoginRouteAvoid = [
          '/admin/login'
      ];
- 
+
      var flag = null;
+     var flag_route = null;
      var currentPath = authInstance.inspectRoute(req);
      authInstance.switchReferr(req);
      authInstance.cacheCurrent(req,currentPath);
 
-    console.log('存在session,身份為:'+req.session.loginUser);
-
-    console.log('輸入的路由為:'+currentPath);
-
      if(req.session.loginUser == undefined){
+
         notLoginRouteAvoid.forEach(function(item, index, array){
             if (item == currentPath){
                 flag = true;
                 return false;
             }
         })
+
         if(flag==true){
             req.flash('signalMsger','未登入時不可去console頁');
             authInstance.directReferr(req,res);
@@ -85,7 +131,7 @@ Auth.prototype.getUserRoute = function(req,res,next){
             next();
         }
           
-     }else{
+     }else if(req.session.loginUser != undefined){
 
         isLoginRouteAvoid.forEach(function(item, index, array){
             if (item == currentPath){
@@ -93,11 +139,22 @@ Auth.prototype.getUserRoute = function(req,res,next){
                 return false;
             }
         });
+
+        var flag_route = authInstance.mappUserRoute(req);
+        // var flag_route = true;
+
         if(flag==true){
             req.flash('signalMsger','已登入時不可去登入頁');
             authInstance.directReferr(req,res);
-         }else{
-            next();
+         }else if(!flag){
+
+            if(flag_route){
+                next();
+            }else{
+                req.flash('signalMsger','已登入但路由驗證失敗');
+                authInstance.directReferr(req,res);
+            }
+            
          }
      } 
 
