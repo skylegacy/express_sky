@@ -2,3 +2,4 @@ forever.log
 out.log
 err.log
 node_modules
+/config/config.json
