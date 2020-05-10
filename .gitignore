@@ -1,3 +1,4 @@
 forever.log
 out.log
 err.log
+node_modules

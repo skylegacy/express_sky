@@ -6,7 +6,7 @@ var logger = require('morgan');
 var session = require('express-session');
 var flash = require('connect-flash');
 var AuthService = require('./libs/authService');
-var UserService = require('./libs/UserService');
+var UserService = require('./libs/userService');
 
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
