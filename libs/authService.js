@@ -71,7 +71,9 @@ Auth.prototype.mappUserRoute = async function(req){
     console.log('存在session,身份為:'+req.session.loginUser);
     console.log('存在session,ID為:'+req.session.loginUserID);
 
-      var isLoginRouteMap =[];
+      var isLoginRouteMap =[
+          '/admin/console'
+      ];
       var permitt = false;
 
         var permitPaths = await authInstance.retrivRoleRoute(req.session.loginUserID);

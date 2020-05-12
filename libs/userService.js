@@ -2,7 +2,7 @@
   
 const saltRounds = 10;
 var models = require('../models');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 
 
