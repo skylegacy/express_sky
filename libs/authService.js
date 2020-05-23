@@ -61,6 +61,18 @@ Auth.prototype.bindUser = async function(req,dataUser){
         req.session.loginUserID = dataUser.user_id;
 };
 
+Auth.prototype.preloadRoute = async function(routeList,uid,req){
+    var authInstance = req.app.get('auth');
+    var permitPaths = await authInstance.retrivRoleRoute(uid);
+    
+    for (const [index, valObj] of permitPaths.entries()) {
+        var item = '/'+valObj.contrlname+'/'+valObj.method;
+        routeList.push(item);
+     }
+  
+     return routeList;
+}
+
 Auth.prototype.mappUserRoute = async function(req){
 
     var authInstance = req.app.get('auth');
@@ -72,7 +84,8 @@ Auth.prototype.mappUserRoute = async function(req){
     console.log('存在session,ID為:'+req.session.loginUserID);
 
       var isLoginRouteMap =[
-          '/admin/console'
+          '/admin/console',
+          '/admin/logout'
       ];
       var permitt = false;
 
@@ -103,8 +116,9 @@ Auth.prototype.getUserRoute = async function(req,res,next){
     var authInstance = req.app.get('auth');
 
     var notLoginRouteAvoid = [
-        '/admin/console',
-        '/admin/logout'
+        //'/admin/console',
+        // '/admin/logout'
+        
      ];
 
      var isLoginRouteAvoid = [
@@ -117,8 +131,11 @@ Auth.prototype.getUserRoute = async function(req,res,next){
      authInstance.switchReferr(req);
      authInstance.cacheCurrent(req,currentPath);
 
+     notLoginRouteAvoid = await authInstance.preloadRoute(notLoginRouteAvoid,1,req);
+
      if(req.session.loginUser == undefined){
 
+        console.log(notLoginRouteAvoid);
         notLoginRouteAvoid.forEach(function(item, index, array){
             if (item == currentPath){
                 flag = true;

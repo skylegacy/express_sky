@@ -16,7 +16,77 @@
     </style>
 </head>
 <body>
-    <%- include('comp/sidemenu'); %>
+    <!-- 左側邊欄 -->
+    <div class="ts left vertical fluid inverted visible menu sidebar">
+        <!-- 搜尋欄位 -->
+        <div class="fitted item">
+            <div class="ts icon fluid basic borderless inverted input">
+                <input type="text" placeholder="搜尋">
+                <i class="search inverted link icon"></i>
+            </div>
+        </div>
+        <!-- / 搜尋欄位 -->
+
+        <!-- 個人資料項目 -->
+        <div class="center aligned item">
+            <img class="ts tiny circular image" src="../images/user.png">
+            <br>
+            <br>
+            <div>Yami Odymel</div>
+        </div>
+        <!-- / 個人資料項目 -->
+
+        <!-- 使用者管理 -->
+        <div class="item">
+            <i class="users icon"></i>
+            使用者管理
+            <div class="ts label">23</div>
+            <div class="menu">
+                <a class="item">搜尋</a>
+                <a class="item">新增</a>
+                <a class="item">移除</a>
+            </div>
+        </div>
+        <!-- / 使用者管理 -->
+
+        <!-- 網站管理 -->
+        <div class="item">
+            <i class="setting icon"></i>
+            網站管理
+            <div class="menu">
+                <a class="item">偏好設定</a>
+                <a class="item">系統優化</a>
+                <a class="item">安全防護</a>
+            </div>
+        </div>
+        <!-- / 網站管理 -->
+
+        <!-- 管理文章 -->
+        <a href="#!" class="item">
+            <i class="newspaper icon"></i>
+            管理文章
+        </a>
+        <!-- / 管理文章 -->
+
+        <!-- 回報處理 -->
+        <a href="#!" class="item">
+            <i class="flag icon"></i>
+            回報處理
+        </a>
+        <!-- / 回報處理 -->
+
+        <!-- 底部選單 -->
+        <div class="bottom menu">
+            <!-- 登出 -->
+            <a href="/admin/logout" class="item">
+                <i class="sign out icon"></i>
+                登出
+            </a>
+            <!-- / 登出 -->
+        </div>
+        <!-- / 底部選單 -->
+    </div>
+    <!-- / 左側邊欄 -->
 
     <!-- 可擠壓式的推動容器 -->
     <div class="squeezable pusher">
@@ -119,7 +189,7 @@
                 <!-- 左側雜項欄位 -->
                 <div class="ten wide column">
                     <div class="ts top attached info segment">
-                        <div class="ts large header">管理員任務</div>
+                        <div class="ts large header">最新會員清單</div>
                     </div>
                     <div class="ts attached segment">
                         <table class="ts very basic table">
@@ -177,13 +247,99 @@
                             </div>
                         </div>
                     </div>
-                  
-                   
+                    <div class="ts top attached info segment">
+                        <div class="ts large header">
+                            管理員留言板
+                            <span class="ts right floated horizontal warning label">2 則新留言</span>
+                        </div>
+                    </div>
+                    <div class="ts attached segment">
+                        <div class="ts speeches">
+                            <div class="left pointing speech">
+                                <div class="avatar">
+                                    <img src="../images/user2.png">
+                                </div>
+                                <div class="content">
+                                    <div class="description">
+                                        記得友善發言！
+                                    </div>
+                                    <div class="meta">
+                                        <div class="item">12:33 PM</div>
+                                        <div class="item">已讀</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="left pointing speech">
+                                <div class="avatar">
+                                    <img src="../images/user3.png">
+                                </div>
+                                <div class="content">
+                                    <div class="description">
+                                        才不管逆雷～
+                                    </div>
+                                    <div class="meta">
+                                        <div class="item">12:33 PM</div>
+                                        <div class="item">已讀</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right pointing speech">
+                                <div class="content">
+                                    <div class="description">
+                                        勒～
+                                    </div>
+                                    <div class="meta">
+                                        <div class="item">12:33 PM</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ts bottom attached fitted segment">
+                        <div class="ts fluid borderless input">
+                            <input type="text" placeholder="輸入留言⋯⋯">
+                        </div>
+                    </div>
                 </div>
                 <!-- / 左側雜項欄位 -->
 
                 <!-- 右側雜項欄位 -->
                 <div class="six wide column">
+                    <!-- 系統佇列 -->
+                    <div class="ts top attached info segment">
+                        <div class="ts large header">系統佇列</div>
+                    </div>
+                    <div class="ts bottom attached segment">
+                        <!-- 清理資料庫 -->
+                        <div class="ts header">清理資料庫</div>
+                        <!-- 進度列 -->
+                        <div class="ts small active primary progress">
+                            <div class="bar" style="width: 30%">
+                                <div class="text">30%</div>
+                            </div>
+                        </div>
+                        <!-- / 進度列 -->
+                        <!-- / 清理資料庫 -->
+
+                        <!-- 清理快取 -->
+                        <div class="ts header">清理快取</div>
+                        <!-- 進度列 -->
+                        <div class="ts small preparing progress">
+                            <div class="bar" style="width: 30%"></div>
+                        </div>
+                        <!-- / 進度列 -->
+                        <!-- 清理快取 -->
+
+                        <!-- 整理遠端倉庫 -->
+                        <div class="ts header">整理遠端倉庫</div>
+                        <!-- 進度列 -->
+                        <div class="ts small indeterminate progress">
+                            <div class="bar" style="width: 30%"></div>
+                        </div>
+                        <!-- / 進度列 -->
+                        <!-- / 整理遠端倉庫 -->
+                    </div>
+                    <!-- / 系統佇列 -->
 
                     <!-- 最新上架產品 -->
                     <div class="ts top attached info segment">

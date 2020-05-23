@@ -7,6 +7,7 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var AuthService = require('./libs/authService');
 var UserService = require('./libs/userService');
+var RbacService = require('./libs/rbacService');
 
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
@@ -16,6 +17,7 @@ var articleRouter = require('./routes/articles');
 var app = express();
 var authService = new AuthService();
 var userService = new UserService();
+var rbacService = new RbacService();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -25,12 +27,17 @@ app.use(flash());
 app.use(logger('dev'));
 app.use(session(AuthService.sessInitData));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('auth',authService);
 app.set('user',userService);
+app.set('rbac',rbacService);
 
-app.use(authService.getUserRoute);
+app.use(function(req,res,next){
+  app.get('rbac').initEnv(req);
+  next();
+})
+app.use(authService.getUserRoute); 
 
 app.use('/',indexRouter);
 

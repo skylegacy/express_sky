@@ -1,0 +1,193 @@
+
+ <!DOCTYPE html>
+ <html>
+ <head>
+     <meta charset="UTF-8">
+     <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+     <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+     <title>儀表板範例 | Tocas UI</title>
+     <style type="text/css">
+         html, body {
+             height: 100%;
+         }
+         .pusher {
+             background-color: rgb(250, 250, 250);
+         }
+     </style>
+ </head>
+ <body>
+     <%- include('../comp/sidemenu'); %>
+ 
+     <!-- 可擠壓式的推動容器 -->
+     <div class="squeezable pusher">
+        
+ 
+         <br>
+ 
+         <!-- 主要容器 -->
+         <div class="ts narrow container">
+             <div class="ts relaxed grid">
+                 <!-- 標題欄位 -->
+                 <div class="sixteen wide column">
+                     <h3 class="ts header">
+                            <%=title %> 
+                         <div class="sub header"> 基於的權限系統。</div>
+                     </h3>
+                 </div>
+                 <!-- / 標題欄位 -->
+ 
+                 <!-- 大略卡片欄位 -->
+                 <div   class="sixteen wide column">
+                     search
+                     
+                     <!-- 區隔線 -->
+                     <div class="ts section divider"></div>
+                     <!-- / 區隔線 -->
+                 </div>
+                 <!-- / 大略卡片欄位 -->
+ 
+                 <!-- 左側雜項欄位 -->
+                 <div class="sixteen wide column">
+                     <div  class="ts top attached info segment">
+                            <div class="ts large header">
+                                    路由方法清單 
+                                    <a href="/admin/router/edit"
+                                     class="ts right floated mini compact button">新增</a>
+                            </div>
+                     </div>
+                     <div class="ts attached segment">
+                         <table id="app" class="ts very basic table fixed ">
+                                 
+                             <thead>
+                                 <tr>
+                                     <th>#</th>
+                                     <th>控制器名稱</th>
+                                     <th>控制器方法</th>
+                                     <th>action</th>
+                                 </tr>
+                             </thead>
+                             <tbody v-for="item in rowContrl" >
+                                 <template v-model="item"> 
+                                        <parenttr v-bind:contrlname="item.contrlname" method="--" num="#"></parenttr>
+                                 </template>
+                                 <template v-for="row_item in detilItem">
+                                        <template v-if="row_item.contrlname==item.contrlname">
+                                            <parenttr v-bind:class="{ active: true}" 
+                                            v-bind:contrlname="row_item.contrlname" 
+                                            v-bind:method="row_item.method" 
+                                            v-bind:editId="row_item.id"
+                                            countself=1
+                                            >
+                                                <childhref v-bind:linkNum="row_item.id" slot="minibtn"></childhref>
+                                            </parenttr> 
+                                           
+                                           
+                                        </template>
+                                        
+                                 </template>
+                             </tbody>
+
+                         </table>
+                     </div>
+               
+                   
+                    
+                 </div>
+                 <!-- / 左側雜項欄位 -->
+  
+             </div>
+         </div>
+         <!-- / 主要容器 -->
+ 
+         <br>
+     </div>
+     <!-- / 可擠壓式的推動容器 --> 
+     <script>
+         var itemRow = <%- $allData %> ;
+         var listRow = <%- $listData %>;
+         console.log(itemRow);
+         console.log(listRow);
+
+
+         var globalData = {
+             counter:0
+         }
+          
+ 
+        var vm = new Vue({
+            el: '#app',
+            data:{
+                text:'testString',
+                rowContrl: listRow,
+                detilItem: itemRow,
+                
+            },
+            components: {
+                'parenttr': {
+                    props: ['contrlname','method','num','countself','editid' ],
+                    data:function(){
+                        return {
+                            num:9,
+                            countself:false, 
+                            btnDom:'--',
+                            editUrl:null
+                        }
+                    },
+                    mounted:function(){
+                        
+                        if(this.countself==true){
+                            this.incrementHandler(this);
+                        } 
+                        
+                        if(this.editid!=undefined){
+                            // console.log(this.editid) 
+                        }
+ 
+                    },
+                    methods:{
+                        incrementHandler: function (obj) {
+                            globalData.counter++;
+                            obj.num = globalData.counter;
+                        }
+                        
+                    },
+                    template:`<tr>
+                                    <td>{{num}}</td>
+                                    <td>{{contrlname}}</td>
+                                    <td>{{method}}</td>
+                                    <slot name="minibtn"></slot>
+                                </tr>`
+                },
+                'childhref':{
+                    props:['text','linknum'],
+                    mounted:function(){
+                        console.log('AA'+this.linknum);
+                        this.deployBtn();
+                    },
+                    methods:{
+                        deployBtn:function(){
+                            this.linkurl = '/admin/router/edit/'+this.linknum; 
+                        }
+                    },
+                    data:function(){
+                            return {
+                                linkurl:null
+                            }
+                    },
+                    template:` <a v-bind:href="this.linkurl" class="ts mini icon button">
+                            <i class="edit icon"></i>
+                        </a>  `
+                }
+            }
+            
+        })
+
+       
+
+        
+     </script>
+ </body>
+ </html>
+ 

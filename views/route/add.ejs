@@ -1,0 +1,162 @@
+
+ <!DOCTYPE html>
+ <html>
+ <head>
+     <meta charset="UTF-8">
+     <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+     <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+     <title>儀表板範例 | Tocas UI</title>
+     <style type="text/css">
+         html, body {
+             height: 100%;
+         }
+         .pusher {
+             background-color: rgb(250, 250, 250);
+         }
+     </style>
+ </head>
+ <body>
+     <%- include('../comp/sidemenu'); %>
+ 
+     <!-- 可擠壓式的推動容器 -->
+     <div class="squeezable pusher">
+        
+ 
+         <br>
+ 
+         <!-- 主要容器 -->
+         <div class="ts narrow container">
+             <div class="ts relaxed grid">
+                 <!-- 標題欄位 -->
+                 <div class="sixteen wide column">
+                     <h3 class="ts header">
+                            <%=title %> 
+                         <div class="sub header"> 基於的權限系統。</div>
+                     </h3>
+                 </div>
+                 <!-- / 標題欄位 -->
+ 
+                 <!-- 大略卡片欄位 -->
+                 <div class="sixteen wide column">
+                     search
+ 
+                     <!-- 區隔線 -->
+                     <div class="ts section divider"></div>
+                     <!-- / 區隔線 -->
+                 </div>
+                 <!-- / 大略卡片欄位 -->
+ 
+                 <!-- 左側雜項欄位 -->
+                 <div class="sixteen wide column">
+                     <div class="ts top attached info segment">
+                            <div class="ts large header">
+                                    路由方法
+                                </div>
+                     </div>
+                     <div class="ts attached segment">
+
+                            <div id="app" class="ts form very narrow container">
+                                    <div class="fields">
+                                        <div class="field">
+                                            <label>控制器名</label>
+                                            <input :placeholder="form.pH_ctrlname" v-model="form.ctrlname" type="text"> 
+                                        </div>
+                                        <div class="field">
+                                            <label>控制器方法</label>
+                                            <input :placeholder="form.pH_methname" v-model="form.methname" type="text">
+                                        </div>
+                                    </div>
+                                    <button  type="submit" class="ts  primary button" >取消</button>
+                                    <button @click="triggFormExcute"  type="submit" class="ts  primary button" >完成</button>
+                            </div>
+
+                     </div>
+               
+                   
+                    
+                 </div>
+                 <!-- / 左側雜項欄位 -->
+  
+             </div>
+         </div>
+         <!-- / 主要容器 -->
+ 
+         <br>
+     </div>
+     <!-- / 可擠壓式的推動容器 --> 
+     <script>
+         var dutyObj = <%- $dataObjt %>;
+         var ItemId = <%- loadId %>;
+         
+         
+         console.log(dutyObj);
+        
+          var vm = new Vue({
+            el:'#app', 
+            beforeCreate:function(){
+                if(dutyObj==0){
+                    dutyObj = {};
+                    dutyObj.flag = "insert";
+                    dutyObj.pH_ctrlname = "请输入控制器名稱 ";
+                    dutyObj.pH_methname = "请输入控制器方法 "; 
+                    console.log(dutyObj);
+                }
+                 
+            },
+            data:function() {
+                  return  {
+                        form: {
+                            ctrlname: dutyObj.contrlname,
+                            methname: dutyObj.method,
+                            pH_ctrlname: dutyObj.pH_ctrlname,
+                            pH_methname: dutyObj.pH_methname
+                            
+                        },
+                        rules: {
+                            ctrlname: {required: true, message: '请输入控制器名稱', trigger: 'blur'},
+                            methname: {required: true, message: '请输入控制器方法', trigger: 'blur'}
+                        } 
+                   }
+                    
+            }, 
+            watch: {
+                //用於驗證值
+            },
+            methods: {
+               triggFormExcute:function(){
+                   if(dutyObj.flag!=undefined){
+                      this.insertFormItem();
+                   }else{
+                      this.updateFormItem();
+                   }
+               },
+               updateFormItem:function(){
+                   console.log("更新數據...");
+                   var params = {
+                       id:ItemId,
+                       contrlname:this.form.ctrlname,
+                       method:this.form.methname 
+                   }
+                   $.post('/admin/router/edit',params,function(response){
+                       console.log(response);
+                   })
+               },
+               insertFormItem:function(){
+                   console.log("插入數據...");
+                   var params = {
+                       contrlname:this.form.ctrlname,
+                       method:this.form.methname 
+                   }
+                   $.post('/admin/router/edit',params,function(response){
+                       console.log(response);
+                   })
+               }
+            }
+
+         });
+     </script>
+ </body>
+ </html>
+ 

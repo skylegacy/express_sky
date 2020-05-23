@@ -3,7 +3,6 @@ var router = express.Router();
 
   /* GET */
   router.get('/console',function(req, res, next){
-      
        res.render('admin');
   })
   
@@ -25,8 +24,79 @@ var router = express.Router();
           csstags: ["/stylesheets/login.css"]
         });
   })
+
+  /* GET */
+  router.get('/router',async function(req,res,next){
+    var modelRouter = req.app.get('rbac');
+    var rendata = await modelRouter.listRouterGrop();
+    var alldata = await modelRouter.listRouter();
+    // console.log(rendata);
+    res.render('route/index',{ 
+      title: '控制路由編輯',
+      $listData: JSON.stringify(rendata),
+      $allData: JSON.stringify(alldata)
+     });
+  })
+
+  /* GET */
+  router.get('/router/edit/:id?',async function(req,res,next){
+    var modelRouter = req.app.get('rbac');
+    var num = req.params.id | 0;
+    var jsonData;
+      if(num){
+        var rendata = await modelRouter.getRouter(num);
+        console.log(rendata);
+        jsonData = rendata[0];
+      }else{
+        jsonData = num;
+      }
+       res.render('route/add',{
+        title: '控制路由編輯',
+         $dataObjt:JSON.stringify(jsonData),
+         loadId:num
+       });
+  })
+
+
+   /* POST */
+   router.post('/logout',function(){
+    var auth = req.app.get('auth');
+    auth.destroySess(req);
+    res.json( {msg:' session destroy success!'} );
+  })
+
+
+  // =============================================================
+  //                             API
+  // =============================================================
+
+
+  /* POST :api  */
+  router.post('/router/edit',async function(req,res,next){
+    var modelRouter = req.app.get('rbac');
+    
+    var handdleData = {
+      contrlname:req.body.contrlname,
+      method:req.body.method
+    }
+    
+    if(req.body.id){
+      var rendata = await modelRouter.editRouter(req.body.id,handdleData);
+      res.json({
+        msg:'success',
+        data:rendata
+      })
+    }else{ 
+      var rendata = await modelRouter.addRouter(handdleData);
+      res.json({
+        msg:'no id',
+        data:rendata
+      })
+    }
+     
+  })
   
-  /* POST */
+  /* POST :api  */
   router.post('/login',async function(req,res,next){
     var auth = req.app.get('auth');
     var user = req.app.get('user');
@@ -53,11 +123,6 @@ var router = express.Router();
   })
 
 
-  /* POST */
-  router.post('/logout',function(){
-    var auth = req.app.get('auth');
-    auth.destroySess(req);
-    res.json( {msg:' session destroy success!'} );
-  })
+ 
 
   module.exports = router;
