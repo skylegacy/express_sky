@@ -57,6 +57,39 @@ var router = express.Router();
        });
   })
 
+  /* GET */
+  router.get('/role/edit/:id?',async function(req,res,next){
+    var modelRole = req.app.get('rbac');
+    var num = req.params.id | 0;
+    var jsonRoute = await modelRole.nevDelegateRou(num);
+    var hasRoute = await modelRole.seletedRou(num);
+    var jsonData;
+      if(num){
+        var rendata = await modelRole.getRole(num);
+        jsonData = rendata[0];
+      }else{
+        jsonData = num;
+      }
+       res.render('role/add',{
+        title: '控制角色編輯',
+         $dataObjt:JSON.stringify(jsonData),
+         loadId:num,
+         $delgateRoute:JSON.stringify(jsonRoute),
+         $hasRoute:JSON.stringify(hasRoute)
+       });
+  })
+
+  /* GET */
+  router.get('/role',async function(req,res,next){
+        var modelRole = req.app.get('rbac');
+        var rendata = await modelRole.listRole();
+     
+       res.render('role/index',{
+            title: '角色身份',
+            $listData: JSON.stringify(rendata)
+       })
+  })
+
 
    /* POST */
    router.post('/logout',function(){
@@ -70,6 +103,27 @@ var router = express.Router();
   //                             API
   // =============================================================
 
+  /* POST :api  */
+  router.post('/role/edit',async function(req,res,next){
+    var modelRole = req.app.get('rbac');
+    var handdleData = {
+      RoleId:req.body.id,
+      RoleName:req.body.rolename,
+      RoleRouteIn:req.body.roleRouteIn,
+      RoleRouteOut:req.body.roleRouteOut
+    }
+
+    if(req.body.id){
+      res.json({
+        msg:'success',
+        data:'已收到目標id'+req.body.id+',目標名稱為:'+req.body.rolename
+      })
+      console.log(handdleData);
+    }else{
+
+    }
+
+  })
 
   /* POST :api  */
   router.post('/router/edit',async function(req,res,next){

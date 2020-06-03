@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Role = sequelize.define('Role', {
-    RouteName: DataTypes.STRING
+    RoleName: DataTypes.STRING
   }, {});
   Role.associate = function(models) {
     // associations can be defined here

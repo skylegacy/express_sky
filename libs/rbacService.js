@@ -55,4 +55,30 @@ Rbac.prototype.addRouter = async function(jdata){
     return status;
 }
 
+Rbac.prototype.listRole = async function(){
+    var result = await models.Role.findAll();
+    return result;
+}
+
+Rbac.prototype.getRole = async function(roleId){
+    var result = await models.sequelize.query('SELECT * FROM Roles where id = :role_id',
+    { replacements: { role_id: roleId }, type: models.Sequelize.QueryTypes.SELECT });
+    return result;
+
+}
+
+Rbac.prototype.nevDelegateRou = async function(roleId){
+    var result = await models.sequelize.query(`select * from routers where Id not in
+    ( select RouteId from RouterRoles where RoleId = :role_id ) `,
+    { replacements: { role_id: roleId },type: models.Sequelize.QueryTypes.SELECT });
+    return result;
+}
+
+Rbac.prototype.seletedRou = async function(roleId){
+    var result = await models.sequelize.query(`SELECT RouteId,contrlname,method FROM 
+    skyship.RouterRoles as A , skyship.routers as B where A.RoleId = :role_id and B.id = A.RouteId ;`,
+    { replacements: { role_id: roleId },type: models.Sequelize.QueryTypes.SELECT });
+    return result;
+}
+
 module.exports = Rbac;

@@ -68,7 +68,7 @@
                                             <input :placeholder="form.pH_methname" v-model="form.methname" type="text">
                                         </div>
                                     </div>
-                                    <button  type="submit" class="ts  primary button" >取消</button>
+                                    <button @click="cancelOperate"  type="submit" class="ts  primary button" >取消</button>
                                     <button @click="triggFormExcute"  type="submit" class="ts  primary button" >完成</button>
                             </div>
 
@@ -152,6 +152,9 @@
                    $.post('/admin/router/edit',params,function(response){
                        console.log(response);
                    })
+               },
+               cancelOperate:function(){
+                 window.history.back();
                }
             }
 

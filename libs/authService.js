@@ -37,12 +37,25 @@ Auth.prototype.switchReferr = function(req){
 }
 
 // 取得路由列表
+// Auth.prototype.retrivRoleRoute = async function(userId){
+    
+//     var result =  await models.sequelize.query(
+//     'select  contrlname,method from '+
+//     'Users as A join RouRoUsers as B join routers as C '+
+//     'on A.id = B.UserId and B.RouRolId = C.id and A.id = :user_id ',
+//       { replacements: { user_id: userId  }, type: models.Sequelize.QueryTypes.SELECT }
+//     );
+
+//     return result;
+// }
+
 Auth.prototype.retrivRoleRoute = async function(userId){
     
     var result =  await models.sequelize.query(
-    'select  contrlname,method from '+
-    'Users as A join RouRoUsers as B join routers as C '+
-    'on A.id = B.UserId and B.RouRolId = C.id and A.id = :user_id ',
+    `select contrlname,method from  
+    Users as A join RouterRoles as B join routers as C 
+    on A.RoleId = B.RoleId  and C.id = B.RouteId and A.id = :user_id
+    `,
       { replacements: { user_id: userId  }, type: models.Sequelize.QueryTypes.SELECT }
     );
 

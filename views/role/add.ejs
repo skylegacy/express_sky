@@ -1,0 +1,316 @@
+
+ <!DOCTYPE html>
+ <html>
+ <head>
+     <meta charset="UTF-8">
+     <link href="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.css" rel='stylesheet'>
+     <script src="https://cdn.rawgit.com/TeaMeow/TocasUI/2.3.2/dist/tocas.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+     <title>儀表板範例 | Tocas UI</title>
+     <style type="text/css">
+         html, body {
+             height: 100%;
+         }
+         .pusher {
+             background-color: rgb(250, 250, 250);
+         }
+
+         #no-tocas-select .no-tocas {
+             background: none;
+             padding: 0;
+         }
+     </style>
+ </head>
+ <body>
+     <%- include('../comp/sidemenu'); %>
+ 
+     <!-- 可擠壓式的推動容器 -->
+     <div class="squeezable pusher">
+        
+ 
+         <br>
+ 
+         <!-- 主要容器 -->
+         <div class="ts narrow container">
+             <div class="ts relaxed grid">
+                 <!-- 標題欄位 -->
+                 <div class="sixteen wide column">
+                     <h3 class="ts header">
+                            <%=title %> 
+                         <div class="sub header"> 基於的權限系統。</div>
+                     </h3>
+                 </div>
+                 <!-- / 標題欄位 -->
+ 
+                 <!-- 大略卡片欄位 -->
+                 <div class="sixteen wide column">
+                     search
+ 
+                     <!-- 區隔線 -->
+                     <div class="ts section divider"></div>
+                     <!-- / 區隔線 -->
+                 </div>
+                 <!-- / 大略卡片欄位 -->
+ 
+                 <!-- 左側雜項欄位 -->
+                 <div class="sixteen wide column">
+                     <div class="ts top attached info segment">
+                            <div class="ts large header">
+                                    路由方法
+                                </div>
+                     </div>
+                     <div class="ts attached segment">
+
+                            <div id="app" class="ts form very narrow container">
+                                    <div class="fields">
+                                        <div class="field">
+                                            <label>控制器名</label>
+                                            <input :placeholder="form.pH_rolename" v-model="form.rolename" type="text"> 
+                                        </div>
+                                         <br>
+                                    </div>
+
+                                    <div id="no-tocas-select" class="three fields">
+                                            <div class="six wide field">
+                                                <label>已分配至該角色路由</label>
+                                                <select id="rmvlist" class="no-tocas" size="5">
+                                                        <template v-for="item in myRoute" v-model="myRoute"> 
+                                                                <option v-bind:value="item.RouteId" 
+                                                                v-bind:data-Contrl="item.contrlname"
+                                                                v-bind:data-Method="item.method"
+                                                                v-bind:data-transfor="item.trans || 2"
+                                                                v-bind:data-loc="0"
+                                                                v-bind:data-flag="item.flag"
+                                                                v-bind:data-rmv="item.fromRmv"
+                                                                @dblclick="onOptChange($event)">
+                                                                    {{ item.contrlname }}/{{ item.method }}
+                                                                </option>
+                                                                
+                                                         </template>    
+                                                                                                                
+                                                </select>
+                                            </div>
+                                            <div class="four wide field">
+                                                    
+                                                    <h3 class="ts center aligned icon header">
+                                                            <i class="angle left icon"></i> 
+                                                            <div class="sub header">雙擊指定</div>
+                                                    </h3>
+                                            </div>
+                                            <div class="six wide field">
+                                                <label>待分配路由</label>
+                                                <select id="addlist" class="no-tocas" size="5"  >
+                                                        <template v-for="item in delgateRoute" v-model="delgateRoute"> 
+                                                            <option v-bind:value="item.id" 
+                                                            v-bind:data-Contrl="item.contrlname"
+                                                            v-bind:data-Method="item.method"
+                                                            v-bind:data-transfor="item.trans || 1"
+                                                            v-bind:data-flag="item.flag"
+                                                            v-bind:data-rmv="item.fromRmv"
+                                                            v-bind:data-loc="1"
+                                                            @dblclick="onOptChange($event)">
+                                                                {{ item.contrlname }}/{{ item.method }}
+                                                            </option>
+                                                        </template>                                                                                         
+                                                </select>
+                                            </div>
+                                     </div>
+                                    <button @click="cancelOperate"  type="submit" class="ts  primary button" >取消</button>
+                                    <button @click="triggFormExcute"  type="submit" class="ts  primary button" >完成</button>
+                            </div>
+
+                     </div>
+               
+                   
+                    
+                 </div>
+                 <!-- / 左側雜項欄位 -->
+  
+             </div>
+         </div>
+         <!-- / 主要容器 -->
+ 
+         <br>
+     </div>
+     <!-- / 可擠壓式的推動容器 --> 
+     <script>
+         var dutyObj = <%- $dataObjt %>;
+         var ItemId = <%- loadId %>;
+         var ItemRoute = <%- $delgateRoute %>;
+         var hasRoute = <%- $hasRoute %>;
+          
+        
+          var vm = new Vue({
+            el:'#app', 
+            beforeCreate:function(){
+                if(dutyObj==0){
+                    dutyObj = {};
+                    dutyObj.flag = "insert";
+                    dutyObj.pH_rolename = "请输入角色名稱 ";
+                    console.log(dutyObj);
+                }
+                 
+            },
+            data:function() {
+                  return  {
+                        delgateRoute: ItemRoute,
+                        myRoute: hasRoute,
+                        form: {
+                            rolename: dutyObj.RoleName, 
+                            pH_rolename: dutyObj.pH_rolename
+                            
+                        },
+                        rules: {
+                            rolename: {required: true, message: '请输入角色名稱', trigger: 'blur'},
+                        },
+                        HandleBackRoute:{
+                            addlist:[],
+                            dellist:[]
+                        } 
+                   }
+                    
+            }, 
+            components:{
+              
+            },
+            methods: {
+                onOptChange:function(event){
+                    // console.log( event.target.value)
+                    var operflag = parseInt(event.target.getAttribute('data-transfor'),10);
+                    // data-transfor 0: 物件位於已綁定欄 , 1: 物件位於未綁定欄
+                    var routeId = parseInt(event.target.value,10); 
+                    var routeContrl = event.target.getAttribute('data-Contrl');
+                    var routeMethod = event.target.getAttribute('data-Method');
+                    var routeRmv = event.target.getAttribute('data-rmv');
+                    var routeTrans = parseInt(event.target.getAttribute('data-transfor'),10);
+                    var routeloc = parseInt(event.target.getAttribute('data-loc'),10);
+
+                    var item = {
+                            'id':routeId,
+                            'contrl':routeContrl,
+                            'method':routeMethod,
+                            'fromRmv':routeRmv,
+                            'trans':routeTrans,
+                            'loc':routeloc
+                        }
+
+                    if(routeloc==1){
+                        
+                        var target = $("#rmvlist");
+                        this.addToList(target,item);
+                    }
+                    else if(routeloc==0){
+                      
+                        var target = $("#addlist");
+                        this.delToList(target,item);
+                    }
+
+                },
+                addToList:function($container,item){
+               
+                    var locate = null;
+                    if(item.fromRmv==1){
+                        locate = "delNew";
+                    }else{
+                        locate = "addNew";
+                    }
+                   this.myRoute.push({
+                        RouteId: item.id,
+                        contrlname: item.contrl,
+                        method: item.method,
+                        fromRmv:item.fromRmv,
+                        trans:item.trans,
+                        flag: locate
+                   })
+                   var selectDex = null;
+                   this.delgateRoute.find(function(arr_item, index, array){
+                        if(parseInt(arr_item.id,10) == item.id){
+                            selectDex = index;
+                            console.log('找到索引id:'+selectDex);
+                        }else{
+                            console.log('沒找到索引');
+                        }
+                   });
+                   this.delgateRoute.splice(selectDex,1);
+                    
+                    
+                },
+                delToList:function($container,item){
+               
+                    var locate = null;
+                    if(item.fromRmv==1){
+                        locate = "delNew";
+                    }else{
+                        locate = "addNew";
+                    }
+
+                    var selectDex = null
+                    this.myRoute.find(function(arr_item, index, array){
+                        if(parseInt(arr_item.RouteId,10) == item.id){
+                            selectDex = index;
+                            console.log('找到索引:'+selectDex);
+                        }else{
+                            console.log('沒找到索引RouteId');
+                        }
+                    })
+                    var shiftItem = this.myRoute.splice(selectDex,1)[0];
+                    shiftItem.flag = locate;
+                    shiftItem.id = shiftItem.RouteId;
+                    shiftItem.trans = item.trans;
+                    if(shiftItem.trans==2){
+                        shiftItem.fromRmv=1;
+                    }
+                    this.delgateRoute.push(shiftItem);
+                     
+                },
+               triggFormExcute:function(){
+                   if(dutyObj.flag!=undefined){
+                      this.insertFormItem();
+                   }else{
+                      this.updateFormItem();
+                   }
+               },
+               updateFormItem:function(){
+                   console.log("更新數據...");
+                   var role_route_in = [];
+                   var role_route_out = [];
+                   $("#rmvlist *[data-transfor='1']").each(function(index,domElement){
+                       var num = parseInt(domElement.value,10);
+                       role_route_in.push(num);
+                   });
+                   $("#addlist *[data-transfor='2']").each(function(index,domElement){
+                       var num = parseInt(domElement.value,10);
+                       role_route_out.push(num);
+                   })
+                   var params = {
+                       id:ItemId,
+                       rolename:this.form.rolename,
+                       roleRouteIn:role_route_in,
+                       roleRouteOut:role_route_out
+                   }
+                   console.log("-----提交表單-----");
+                   console.log(params);
+                   $.post('/admin/role/edit',params,function(response){
+                       console.log(response);
+                   })
+               },
+               insertFormItem:function(){
+                   console.log("插入數據...");
+                   var params = {
+                       contrlname:this.form.rolename
+                   }
+                   $.post('/admin/role/edit',params,function(response){
+                       console.log(response);
+                   })
+               },
+               cancelOperate:function(){
+                 window.history.back();
+               }
+            }
+
+         });
+     </script>
+ </body>
+ </html>
+ 
